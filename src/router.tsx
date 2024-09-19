@@ -4,6 +4,7 @@ import Products, { loader as productsLoader } from './views/Products'
 import NewProduct, { action as newProductAction } from './views/NewProduct'
 import EditProduct from './views/EditProduct'
 import { loader as editProductLoader, action as editProductAction } from './views/EditProduct'
+import { action as deleteProductAction } from './components/ProductDetails'
 
 export const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Products />,
-        loader: productsLoader
+        loader: productsLoader,
       },
       {
         path: '/products/new',
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
         element: <EditProduct />,
         action: editProductAction,
         loader: editProductLoader,
+      },
+      {
+        path: 'products/:id/delete',
+        action: deleteProductAction,
       }
     ]
   },
