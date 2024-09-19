@@ -34,7 +34,7 @@ export default function ProductDetails({product}: ProductDetailsProps) {
             className="w-full px-2 py-1 text-sm font-black uppercase transition border border-red-400 rounded-lg cursor-pointer active:scale-105 hover:ring-2 hover:ring-offset-2 hover:ring-red-400"
             onClick={() => navigate(`/products/${product.id}/edit`)}
           >
-            Edit
+            Delete
           </button>
         </div>
       </td>

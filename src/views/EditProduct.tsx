@@ -1,6 +1,6 @@
 import { Link, Form, useActionData, ActionFunctionArgs, redirect, useLoaderData, LoaderFunctionArgs } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
-import { addProduct, getProductById } from "../services/ProductService";
+import { getProductById, updateProduct } from "../services/ProductService";
 import { Product } from "../types";
 
 export async function loader({params}: LoaderFunctionArgs) {
@@ -15,7 +15,7 @@ export async function loader({params}: LoaderFunctionArgs) {
 
 }
 
-export async function action({request}: ActionFunctionArgs) {
+export async function action({request, params}: ActionFunctionArgs) {
   const data = Object.fromEntries(await request.formData())
   
   let error = ''
@@ -25,17 +25,22 @@ export async function action({request}: ActionFunctionArgs) {
   if(error.length) {
     return error
   }
-
-  await addProduct(data)
-  return redirect('/')
+  if(params.id !== undefined) {
+    await updateProduct(data, +params.id)
+    return redirect('/')
+  }
+  
 }
 
 export default function EditProduct() {
   const error = useActionData() as string
   const product = useLoaderData() as Product
+
+  const availabilityOptions = [
+    { name: "Available", value: true },
+    { name: "Not available", value: false },
+  ];
   
-
-
   return (
     <>
       <div className="flex justify-between">
@@ -48,11 +53,7 @@ export default function EditProduct() {
         </Link>
       </div>
 
-      <Form 
-        className="mt-10"
-        method="POST"
-
-      >
+      <Form className="mt-10" method="POST">
         <div className="mb-4">
           <label className="text-gray-800" htmlFor="name">
             Product name:
@@ -78,6 +79,24 @@ export default function EditProduct() {
             name="price"
             defaultValue={product.price}
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="text-gray-800" htmlFor="availability">
+            Availability:
+          </label>
+          <select
+            id="availability"
+            className="block w-full p-3 mt-2 bg-gray-50"
+            name="availability"
+            defaultValue={product?.availability.toString()}
+          >
+            {availabilityOptions.map((option) => (
+              <option key={option.name} value={option.value.toString()}>
+                {option.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
